@@ -7,6 +7,7 @@ from gensim import corpora, models
 import numpy as np
 import jieba
 
+
 def get_dict():
     train = []
     fp = codecs.open('../data/weibo_lihang.txt', 'r', encoding='utf8')#文本文件，输入需要提取主题的文档
