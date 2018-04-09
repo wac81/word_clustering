@@ -163,7 +163,8 @@ class Lda2VecFeaturizer:
             #np.savez('topics.pyldavis', **data)
             for d, f in utils.chunks(self.batchsize, self.doc_ids, self.flattened):
                 t0 = time.time()
-                optimizer.zero_grads()
+                # optimizer.zero_grads()
+                optimizer.reallocate_cleared_grads()  #by wac
                 l = self.train_model.fit_partial(d.copy(), f.copy(), update_words=update_words, update_topics=update_topics)
                 prior = self.train_model.prior()
                 loss = prior * self.fraction
@@ -251,6 +252,7 @@ class Lda2VecFeaturizer:
 
 
         optimizer = O.Adam()
+        # O.Adam.cle
         optimizer.setup(self.infer_model)
         clip = chainer.optimizer.GradientClipping(5.0)
         optimizer.add_hook(clip)
@@ -277,7 +279,8 @@ class Lda2VecFeaturizer:
             #np.savez('topics.pyldavis', **data)
             for d, f in utils.chunks(self.batchsize, self.doc_ids, self.flattened):
                 t0 = time.time()
-                optimizer.zero_grads()
+                # optimizer.zero_grads()
+                optimizer.reallocate_cleared_grads()
                 l = self.infer_model.fit_partial(d.copy(), f.copy(), update_words=update_words, update_topics=update_topics)
                 prior = self.infer_model.prior()
                 loss = prior * self.fraction
