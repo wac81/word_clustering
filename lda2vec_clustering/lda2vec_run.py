@@ -12,7 +12,7 @@ import numpy as np
 from lda2vec.model import LDA2Vec
 
 
-data_dir = os.getenv('data_dir', '../lda2vec-py2/') #py2
+data_dir = os.getenv('data_dir', '../lda2vec_clustering/') #py2
 fn_vocab = '{data_dir:s}/vocab.pkl'.format(data_dir=data_dir)
 fn_corpus = '{data_dir:s}/corpus.pkl'.format(data_dir=data_dir)
 fn_flatnd = '{data_dir:s}/flattened.npy'.format(data_dir=data_dir)
