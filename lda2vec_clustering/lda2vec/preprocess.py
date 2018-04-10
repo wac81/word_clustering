@@ -1,11 +1,10 @@
-from __future__ import unicode_literals
-from spacy.en import English
+import spacy
 from spacy.attrs import LOWER, LIKE_URL, LIKE_EMAIL
 
 import numpy as np
 
 
-def tokenize(texts, max_length, skip=-2, attr=LOWER, merge=False, nlp=None,
+def tokenize(texts, max_length, skip=1, attr=LOWER, merge=False, nlp=None,
              **kwargs):
     """ Uses spaCy to quickly tokenize text and return an array
     of indices.
@@ -59,16 +58,15 @@ def tokenize(texts, max_length, skip=-2, attr=LOWER, merge=False, nlp=None,
     >>> arr[0, 1] == w2i[u'you']
     True
     >>> arr[0, -1]  # last word in 0th document is a pad word
-    -2
+    1
     >>> arr[0, 4] == w2i[u'class action lawsuit']  # noun phrase is tokenized
     True
     >>> arr[1, 1]  # The URL token is thrown out
-    -2
+    1
     """
     if nlp is None:
-        nlp = English()
-    data = np.zeros((len(texts), max_length), dtype='int32')
-    data[:] = skip
+        nlp = spacy.load('en')
+    data = np.full((len(texts), max_length), skip, dtype='uint64')
     bad_deps = ('amod', 'compound')
     for row, doc in enumerate(nlp.pipe(texts, **kwargs)):
         if merge:
@@ -82,14 +80,13 @@ def tokenize(texts, max_length, skip=-2, attr=LOWER, merge=False, nlp=None,
                     # Merge the tokens, e.g. good_ideas
                     phrase.merge(phrase.root.tag_, phrase.text,
                                  phrase.root.ent_type_)
-            # Iterate over named entities
-            for ent in doc.ents:
-                if len(ent) > 1:
-                    # Merge them into single tokens
-                    ent.merge(ent.root.tag_, ent.text, ent.label_)
-        dat = doc.to_array([attr, LIKE_EMAIL, LIKE_URL]).astype('int32')
+                # Iterate over named entities
+                for ent in doc.ents:
+                    if len(ent) > 1:
+                        # Merge them into single tokens
+                        ent.merge(ent.root.tag_, ent.text, ent.label_)
+        dat = doc.to_array([attr, LIKE_EMAIL, LIKE_URL])
         if len(dat) > 0:
-            dat = dat.astype('int32')
             msg = "Negative indices reserved for special tokens"
             assert dat.min() >= 0, msg
             # Replace email and URL tokens
