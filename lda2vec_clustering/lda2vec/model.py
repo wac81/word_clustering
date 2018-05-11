@@ -520,3 +520,9 @@ class LDA2Vec():
     # 					l_lda=loss_lda, rate=rate)
 
     # 			print(msg.format(**logs))
+
+    def load(self, path):
+        sess = tf.Session()
+        # First let's load meta graph and restore weights
+        saver = tf.train.import_meta_graph('./log_180503_1444/180503_1444_lda2vec-15403100.meta')
+        saver.restore(sess, tf.train.latest_checkpoint('./log_180503_1444/'))

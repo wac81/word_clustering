@@ -10,7 +10,7 @@ import pickle
 import numpy as np
 
 from lda2vec.model import LDA2Vec
-
+import tensorflow as tf
 
 data_dir = os.getenv('data_dir', '../lda2vec_clustering/') #py2
 fn_vocab = '{data_dir:s}/vocab.pkl'.format(data_dir=data_dir)
@@ -65,5 +65,14 @@ for key in sorted(locals().keys()):
         print(key, val)
 
 
-model.train(doc_ids, flattened, vocab, words, loss_switch_epochs=0, max_epochs=np.inf, save=True, save_every=50, outdir="./out", 
-            summarize=True, summarize_every=50, metadata="metadata.tsv", metadata_docs="metadata.docs.tsv") #added vocab
+# model.train(doc_ids, flattened, vocab, words, loss_switch_epochs=0, max_epochs=np.inf, save=True, save_every=50, outdir="./out",
+#             summarize=True, summarize_every=50, metadata="metadata.tsv", metadata_docs="metadata.docs.tsv") #added vocab
+
+
+# sess=tf.Session()
+# #First let's load meta graph and restore weights
+# saver = tf.train.import_meta_graph('./log_180503_1444/180503_1444_lda2vec-15403100.meta')
+# saver.restore(sess, tf.train.latest_checkpoint('./log_180503_1444/'))
+
+model = LDA2Vec(meta_graph='./log_180503_1444/180503_1444_lda2vec-15403100')
+model.compute_similarity(doc_ids, [0], )
