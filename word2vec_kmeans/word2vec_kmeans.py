@@ -38,7 +38,7 @@ def delNOTNeedWords(content,customstopwords=None):
     return result,return_words
 
 
-def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vectorSize=100, classCount=10):
+def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vectorSize=100, classCount=20):
     '''
     textUrl:输入文本的本地路径，
     fencijieguo：分词结果存储到本地路径，
@@ -61,7 +61,7 @@ def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vect
     # 使用jieba分词
 
     # 分词结果放入到的文件路径
-    outfenci = codecs.open(cutwords, "a+", 'utf-8')
+    outfenci = codecs.open(cutwords, "w+", 'utf-8')
     tempList = re.split(u'[。？！?!]', textstr)
     for row in tempList:
         if row != None and row != '':
@@ -99,7 +99,7 @@ def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vect
     return classCollects
 
 if __name__ == '__main__':
-    classCollects = wordsCluster('../data/weibo_lihang.txt')
+    classCollects = wordsCluster('../data/cache-msgs.txt', line_count_limit=10000000)
 
     results = {}
     for i, v in enumerate(classCollects.values()):
@@ -110,3 +110,8 @@ if __name__ == '__main__':
             temp.append(delNOTNeedWords(w)[0])
         results[i] = temp
     print results
+
+    for k in results:
+        with open("../data/word2vec/" + str(k) + '.csv', 'w+') as f:
+            f.write('\r\n'.join(results[k]))
+

@@ -13,11 +13,16 @@ TaggededDocument = gensim.models.doc2vec.TaggedDocument
 def get_datasest(line_count_limit=1000):
     count = 0
     docs = []
-    # with open("../weibo_lihang.txt", 'r') as cf:
-    for line in open("../data/weibo_lihang.txt", 'r'):
+    # with open("../data/cache-msgs.txt", 'r') as f:
+    #     print f.readline()
+    # for line in open("../data/weibo_lihang.txt", 'r'):
+    for line in open("../data/cache-msgs.txt"):
+
         # delNOTNeedWords()
         count += 1
-        docs.append(line)
+        docs = line.split('\r')
+        # docs.append(line)
+
         if count == line_count_limit:
             break
     print len(docs)
@@ -70,12 +75,19 @@ def cluster(x_train):
 
     print classCollects
 
-    #预测并写前100句
-    labels = kmean_model.predict(infered_vectors_list[0:100])
+    # #预测并写前100句
+    # labels = kmean_model.predict(infered_vectors_list[0:100])
+    #预测并写所有
+    labels = kmean_model.predict(infered_vectors_list)
+
     cluster_centers = kmean_model.cluster_centers_
 
+
+    '''
+    两种写入方式
+    '''
     with open("own_classify.txt", 'w') as wf:
-        for i in range(100):
+        for i in range(len(infered_vectors_list)):
             string = ""
             text = x_train[i][0]
             for word in text:
@@ -85,10 +97,21 @@ def cluster(x_train):
             string = string + '\n'
             wf.write(string)
 
+    for i in range(len(infered_vectors_list)):
+        with open("../data/sentence2vec/" + str(labels[i]) + '.csv', 'a+') as f:
+            string = ""
+            text = x_train[i][0]
+            for word in text:
+                string = string + word
+            string = string + '\t'
+            string = string + str(labels[i])
+            string = string + '\n'
+            f.write(string)
+
     return cluster_centers
 
 
 if __name__ == '__main__':
     x_train = get_datasest()
-    model_dm = train(x_train)
+    # model_dm = train(x_train)
     cluster_centers = cluster(x_train)

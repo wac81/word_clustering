@@ -75,4 +75,4 @@ for key in sorted(locals().keys()):
 # saver.restore(sess, tf.train.latest_checkpoint('./log_180503_1444/'))
 
 model = LDA2Vec(meta_graph='./log_180503_1444/180503_1444_lda2vec-15403100')
-model.compute_similarity(doc_ids, [0], )
+model.compute_similarity(doc_ids, [0], [0])
