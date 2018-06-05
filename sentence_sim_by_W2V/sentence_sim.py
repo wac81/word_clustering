@@ -23,7 +23,7 @@ def sentncevector(sentence, w2v_model):
 def compute_sim(sentence_u, sentence_v):
     '''
     get  Similar score from sentence_u and sentence_v
-
+    sim = 1 - arccos(u.v/||u|| ||v||)/pi
     :param sentence_u:
     :param sentence_v:
     :return:
