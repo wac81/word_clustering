@@ -4,7 +4,7 @@ import sys
 import gensim
 import numpy as np
 
-from gensim.models.doc2vec import Doc2Vec, LabeledSentence
+from gensim.models.doc2vec import Doc2Vec
 from sklearn.cluster import KMeans
 
 TaggededDocument = gensim.models.doc2vec.TaggedDocument
