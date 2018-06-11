@@ -51,4 +51,4 @@ def jaccard_distance_normal(y_true, y_pred, smooth=100):
     return (1 - jac) * smooth
 
 if __name__ == '__main__':
-    print jaccard_distance_normal(np.array([[2,3,12,4],[2,3,153,2]]),np.array([2,2,5,34]))
+    print jaccard_distance_normal(np.array([[2,3,12,4],[2,3,153,2]]), np.array([2,2,5,34]))
