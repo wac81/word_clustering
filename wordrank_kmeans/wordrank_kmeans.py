@@ -1,5 +1,31 @@
 # -*- coding: utf-8 -*-
+'''
+mpich
+编译mpich
+http://www.mpich.org/downloads/
 
+./configure --enable-mpi-thread-multiple
+make;sudo make install
+
+sudo apt-get install mercurial
+sudo apt-get install libboost-all-dev (on Ubuntu)
+sudo apt install libomp-dev
+
+
+./install.sh  must modify
+
+
+after train
+model.save("wordrank")
+model.save_word2vec_format("wordrank_in_word2vec.vec")
+
+and
+
+model.load
+model.load_word2vec_format  (not saved necessary)
+
+
+'''
 import re
 import jieba
 import jieba.analyse
@@ -10,10 +36,21 @@ from gensim.models.wrappers import Wordrank
 from gensim.models.word2vec import LineSentence
 
 import jieba.posseg as pseg
+import jieba
 import os
-stopwords = codecs.open('../data/stopwords.txt', encoding='UTF-8').read()
-# print stopwords
+import shutil
 
+PATH = os.path.dirname(__file__)
+
+stopwords = codecs.open(os.path.join(PATH, '../data/stopwords.txt'), encoding='UTF-8').read()
+
+path_to_wordrank = '/home/wac/PycharmProjects/wordrank'
+# path_to_wordrank = '/home/wac/PycharmProjects/xuzp/wordrank'
+# path_to_wordrank = '/home/wac/wordrank'
+
+corpus_file = 'cutwords.txt'
+
+# print stopwords
 def delNOTNeedWords(content,customstopwords=None):
     # words = jieba.lcut(content)
     if customstopwords == None:
@@ -39,7 +76,7 @@ def delNOTNeedWords(content,customstopwords=None):
     return result,return_words
 
 
-def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vectorSize=100, classCount=20):
+def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vectorSize=128, window=15, iter=100, classCount=20):
     '''
     textUrl:输入文本的本地路径，
     fencijieguo：分词结果存储到本地路径，
@@ -76,9 +113,23 @@ def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vect
     # 获取当前文件的父目录
     dir_path = os.path.abspath(os.path.dirname(current_path) + os.path.sep + ".")
 
-    model = Wordrank.train(wr_path='/home/wac/PycharmProjects/wordrank', corpus_file='cutwords.txt', out_name=dir_path + '/wr_model')
-    # word2vec向量化
-    # model = Word2Vec(LineSentence(cutwords), size=vectorSize, window=5, min_count=3, workers=4)
+
+
+    if os.path.exists(dir_path + '/wr_model'):
+        shutil.rmtree(dir_path + '/wr_model')
+    try:
+        model = Wordrank.train(path_to_wordrank,
+                           corpus_file = corpus_file,
+                           out_name=dir_path + '/wr_model',
+                           size=vectorSize,
+                           window=window,
+                           iter=iter)
+    except AttributeError as e:
+        if 'sort_embeddings' in e.message:
+            model = Wordrank.load_word2vec_format(dir_path + '/wr_model/wordrank.words.w2vformat')
+            pass
+
+    # model = Wordrank.load_word2vec_format(dir_path + '/wr_model/wordrank.words.w2vformat')
 
     # 获取model里面的所有关键词
     keys = model.wv.vocab.keys()
@@ -106,7 +157,7 @@ def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vect
     return classCollects
 
 if __name__ == '__main__':
-    classCollects = wordsCluster('../data/cache-msgs.txt', line_count_limit=10000000)
+    classCollects = wordsCluster(os.path.join(PATH, '../data/cache-msgs.txt'), line_count_limit=10000000)
 
     results = {}
     for i, v in enumerate(classCollects.values()):
