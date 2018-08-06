@@ -12,6 +12,21 @@ import jieba.posseg as pseg
 
 stopwords = codecs.open('../data/stopwords.txt', encoding='UTF-8').read()
 # print stopwords
+'''
+Basic Settings
+
+Window Size	Dynamic Window	Sub-sampling	Low-Frequency Word	Iteration	Negative Sampling*
+5	            Yes	        1e-5	            10	                5	            5
+'''
+vectorSize = 128
+classCount = 10  # 聚类数量
+min_count = 3  # Low-Frequency Word  这里考虑到语料较少所以该值低些
+SG = 1  # skipgram
+workers = 4
+iter = 50  # 考虑到语料少多训练几次
+sub_sample = 1e-5
+window = 5  # Window Size
+
 
 def delNOTNeedWords(content,customstopwords=None):
     # words = jieba.lcut(content)
@@ -71,8 +86,15 @@ def wordsCluster(text_path, line_count_limit=1000, cutwords='cutwords.txt', vect
     outfenci.close()
 
     # word2vec向量化
-    model = Word2Vec(LineSentence(cutwords), size=vectorSize, window=5, min_count=3, workers=4)
-
+    model = Word2Vec(LineSentence(cutwords),
+                     size=vectorSize,
+                     min_count=min_count,
+                     sg=SG,
+                     workers=workers,
+                     iter=iter,
+                     window=window,
+                     sample=sub_sample,
+                     )
     # 获取model里面的所有关键词
     keys = model.wv.vocab.keys()
 
