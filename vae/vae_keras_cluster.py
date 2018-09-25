@@ -143,7 +143,7 @@ vae.compile(optimizer='adam')
 vae.summary()
 
 
-vae.fit(x_train, 
+vae.fit(x_train,
         shuffle=True,
         epochs=epochs,
         batch_size=batch_size,

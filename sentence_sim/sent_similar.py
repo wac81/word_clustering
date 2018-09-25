@@ -11,7 +11,7 @@ from margin_softmax import *
 from keras.callbacks import Callback
 
 
-num_train_groups = 90000 # 前9万组问题拿来做训练
+num_train_groups = 140 # 前9万组问题拿来做训练
 maxlen = 32
 batch_size = 100
 min_count = 5
@@ -20,9 +20,9 @@ epochs = 30 # amsoftmax需要25个epoch，其它需要20个epoch
 
 
 data = pd.read_csv('tongyiju.csv', encoding='utf-8', header=None, delimiter='\t')
-insertRow = pd.DataFrame([[0., '龙卷风是怎么形成的']])
-for i in range(100000):
-    data = data.append(insertRow, ignore_index=True)
+# insertRow = pd.DataFrame([[0., '龙卷风是怎么形成的']])
+# for i in range(100000):
+#     data = data.append(insertRow, ignore_index=True)
 
 # data = data * 1000
 print(len(data), data)
@@ -162,5 +162,8 @@ def most_similar(s):
 
 
 most_similar(u'ps格式可以转换成ai格式吗')
+print('*'*100)
 most_similar(u'广州的客运站的数目')
+print('*'*100)
+
 most_similar(u'沙发一般有多高')
