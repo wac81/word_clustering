@@ -1,5 +1,12 @@
 #! -*- coding: utf-8 -*-
+'''
+相似句子查找应该多余一些相似句子的定位，词定位，用词的完全匹配，和词与词的距离来做最后的筛选，提高准确率
 
+
+相似句子的模型可以用双子模型来处理。
+
+
+'''
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -11,7 +18,7 @@ from margin_softmax import *
 from keras.callbacks import Callback
 
 
-num_train_groups = 140 # 前9万组问题拿来做训练
+num_train_groups = 180 # 前9万组问题拿来做训练
 maxlen = 32
 batch_size = 100
 min_count = 5
