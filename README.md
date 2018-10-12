@@ -4,3 +4,4 @@
 ### word2vec
 ### lda2vec almost finished
 ### gmvae   no finished
+### sent similar compute 
